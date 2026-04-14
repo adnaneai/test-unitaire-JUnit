@@ -19,7 +19,7 @@ public class ArticleRestControllerImpl implements ArticleRestController {
 
     @Override
     @PostMapping
-    public ResponseEntity<ArticleDTO> saveArticle(@RequestBody ArticleDTO articleDTO) {
+    public ResponseEntity<ArticleDTO> saveArticle(@RequestBody ArticleDTO articleDTO) throws ArticleNotFoundException {
         ArticleDTO savedArticle = articleService.save(articleDTO);
         return ResponseEntity.ok(savedArticle);
     }

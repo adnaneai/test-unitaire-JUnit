@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 @Transactional
@@ -21,7 +23,13 @@ public class ArticleServiceImpl implements ArticleService {
     private ArticleMapper articleMapper;
     private ArticleRepository articleRepository;
     @Override
-    public ArticleDTO save(ArticleDTO articleDTO) {
+    public ArticleDTO save(ArticleDTO articleDTO) throws ArticleNotFoundException {
+        if (articleDTO.getId() != null) {
+            Optional<Article> existingArticle = articleRepository.findById(articleDTO.getId());
+            if (existingArticle.isPresent()) {
+                throw new ArticleNotFoundException("Article with id " + articleDTO.getId() + " already exists");
+            }
+        }
         log.debug("Saving new article");
         Article article=articleMapper.fromArticleDTOToArticle(articleDTO);
         Article savedArticle=articleRepository.save(article);
