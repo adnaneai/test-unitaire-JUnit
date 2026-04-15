@@ -100,21 +100,80 @@ class ArticleServiceTest {
         Page<ArticleDTO> result = underTest.getAllArticles(0,5);
         AssertionsForClassTypes.assertThat(expected).usingRecursiveComparison().isEqualTo(result.getContent());
     }
+    @Test
+    void shouldFndArticleById() throws ArticleNotFoundException {
+        Long articleId = 1L;
+        Article article = Article.builder()
+                .id(1L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        ArticleDTO expected = ArticleDTO.builder()
+                .id(1L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        Mockito.when(articleRepository.findById(articleId)).thenReturn(Optional.of(article));
+        Mockito.when(articleMapper.fromArticleToArticleDTO(article)).thenReturn(expected);
+        ArticleDTO result = underTest.getArticleById(articleId);
+        AssertionsForClassTypes.assertThat(expected).usingRecursiveComparison().isEqualTo(result);
+    }
+    @Test
+    void shouldNotFindArticleById() throws ArticleNotFoundException {
+        Long articleId = 9L;
+        Mockito.when(articleRepository.findById(articleId)).thenReturn(Optional.empty());
+        AssertionsForClassTypes.assertThatThrownBy(() -> underTest.getArticleById(articleId))
+                .isInstanceOf(ArticleNotFoundException.class)
+                .hasMessage("Article not found");
+    }
+    @Test
+    void testUpdateArticle() throws ArticleNotFoundException {
+        Long articleId = 6L;
+        ArticleDTO articleDTO = ArticleDTO.builder()
+                .id(6L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        Article article = Article.builder()
+                .id(6L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        Article updatedArticle = Article.builder()
+                .id(6L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        ArticleDTO expected = ArticleDTO.builder()
+                .id(6L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        Mockito.when(articleRepository.findById(articleId)).thenReturn(Optional.of(article));
+//        Mockito.when(articleMapper.fromArticleDTOToArticle(articleDTO)).thenReturn(article);
+        Mockito.when(articleRepository.save(article)).thenReturn(updatedArticle);
+        Mockito.when(articleMapper.fromArticleToArticleDTO(updatedArticle)).thenReturn(expected);
+        ArticleDTO result = underTest.updateArticleById(articleId, articleDTO);
+        AssertionsForClassTypes.assertThat(result).isNotNull();
+        AssertionsForClassTypes.assertThat(expected).usingRecursiveComparison().isEqualTo(result);
+    }
+    @Test
+    void shouldDeleteArticle() throws ArticleNotFoundException {
+        Long articleId = 1L;
+        Article article = Article.builder()
+                .id(6L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        Mockito.when(articleRepository.findById(articleId)).thenReturn(Optional.of(article));
+        underTest.deleteArticleById(articleId);
+        Mockito.verify(articleRepository).delete(article);
+    }
+    @Test
+    void shouldNotDeleteArticle() throws ArticleNotFoundException {
+        Long articleId = 9L;
+        Mockito.when(articleRepository.findById(articleId)).thenReturn(Optional.empty());
+        AssertionsForClassTypes.assertThatThrownBy(() -> underTest.deleteArticleById(articleId))
+                .isInstanceOf(ArticleNotFoundException.class);
+    }
 }
-
-
-//@Test
-//void shouldGetAllCustomers() {
-//    List<Customer> customers = List.of(
-//            Customer.builder().firstName("Mohamed").lastName("Youssfi").email("med@gmail.com").build(),
-//            Customer.builder().firstName("Ahmed").lastName("Yassine").email("ahmed@gmail.com").build()
-//    );
-//    List<CustomerDTO> expected = List.of(
-//            CustomerDTO.builder().firstName("Mohamed").lastName("Youssfi").email("med@gmail.com").build(),
-//            CustomerDTO.builder().firstName("Ahmed").lastName("Yassine").email("ahmed@gmail.com").build()
-//    );
-//    Mockito.when(customerRepository.findAll()).thenReturn(customers);
-//    Mockito.when(customerMapper.fromListCustomers(customers)).thenReturn(expected);
-//    List<CustomerDTO> result = underTest.getAllCustomers();
-//    AssertionsForClassTypes.assertThat(expected).usingRecursiveComparison().isEqualTo(result);
-//}

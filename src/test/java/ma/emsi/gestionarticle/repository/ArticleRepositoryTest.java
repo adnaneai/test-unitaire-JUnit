@@ -1,16 +1,20 @@
 package ma.emsi.gestionarticle.repository;
 
+import ma.emsi.gestionarticle.GestionArticleApplication;
 import ma.emsi.gestionarticle.entities.Article;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
 
 @ActiveProfiles("test")
 @DataJpaTest
+@ContextConfiguration(classes = GestionArticleApplication.class)
 class ArticleRepositoryTest {
     @Autowired
     ArticleRepository articleRepository;
@@ -35,7 +39,7 @@ class ArticleRepositoryTest {
         Long existingId = expected.getId();
         Optional<Article> result = articleRepository.findById(existingId);
         assertThat(result).isPresent();
-        assertThat(result.get().getId()).isEqualTo(existingId);  // ← CHANGE ICI : utilisez existingId au lieu de 1L
+        assertThat(result.get().getId()).isEqualTo(existingId);
         assertThat(result.get().getDescription()).isEqualTo("Pain");
     }
     @Test

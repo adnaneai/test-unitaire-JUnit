@@ -6,15 +6,18 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @SpringBootApplication
+//@Configuration
+//@Profile("!test")
 public class GestionArticleApplication {
     private ArticleRepository articleRepository;
 
-    public GestionArticleApplication(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
-    }
+//    public GestionArticleApplication(ArticleRepository articleRepository) {
+//        this.articleRepository = articleRepository;
+//    }
 
     public static void main(String[] args) {
         SpringApplication.run(GestionArticleApplication.class, args);
