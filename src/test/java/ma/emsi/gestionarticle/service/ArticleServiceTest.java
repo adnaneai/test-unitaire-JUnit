@@ -19,6 +19,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
     @Mock
@@ -28,7 +31,7 @@ class ArticleServiceTest {
     @InjectMocks
     private ArticleServiceImpl underTest;
     @Test
-    void shouldSaveNwwArticle() throws ArticleNotFoundException {
+    void shouldSaveNewArticle() throws ArticleNotFoundException {
         ArticleDTO articleDTO = ArticleDTO.builder()
                 .description("Pain")
                 .price(1.2F)
@@ -53,6 +56,41 @@ class ArticleServiceTest {
         ArticleDTO result = underTest.save(articleDTO);
         AssertionsForClassTypes.assertThat(result).isNotNull();
         AssertionsForClassTypes.assertThat(expected).usingRecursiveComparison().isEqualTo(result);
+    }
+    @Test
+    void shouldSaveArticle() throws ArticleNotFoundException {
+        ArticleDTO articleDTO = ArticleDTO.builder()
+                .id(1L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        Article article = Article.builder()
+                .id(1L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        Article savedArticle = Article.builder()
+                .id(1L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+        ArticleDTO expected = ArticleDTO.builder()
+                .id(1L)
+                .description("Pain")
+                .price(1.2F)
+                .quantity(10).build();
+
+        Mockito.when(articleRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Mockito.when(articleMapper.fromArticleDTOToArticle(articleDTO)).thenReturn(article);
+        Mockito.when(articleRepository.save(article)).thenReturn(savedArticle);
+        Mockito.when(articleMapper.fromArticleToArticleDTO(savedArticle)).thenReturn(expected);
+
+        ArticleDTO result = underTest.save(articleDTO);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+
     }
     @Test
     void shouldNotSavedArticleWhenIdExist(){
@@ -101,7 +139,7 @@ class ArticleServiceTest {
         AssertionsForClassTypes.assertThat(expected).usingRecursiveComparison().isEqualTo(result.getContent());
     }
     @Test
-    void shouldFndArticleById() throws ArticleNotFoundException {
+    void shouldFindArticleById() throws ArticleNotFoundException {
         Long articleId = 1L;
         Article article = Article.builder()
                 .id(1L)
@@ -156,6 +194,41 @@ class ArticleServiceTest {
         ArticleDTO result = underTest.updateArticleById(articleId, articleDTO);
         AssertionsForClassTypes.assertThat(result).isNotNull();
         AssertionsForClassTypes.assertThat(expected).usingRecursiveComparison().isEqualTo(result);
+    }
+    @Test
+    void shouldUpdateOnlyDescription() throws ArticleNotFoundException {
+        Long id = 1L;
+        Article existingArticle = Article.builder()
+                .id(id)
+                .description("Pain")
+                .price(1.0F)
+                .quantity(5)
+                .build();
+        ArticleDTO updateDTO = ArticleDTO.builder()
+                .description(null)
+                .price(0.0F)
+                .quantity(0)
+                .build();
+        Article updatedArticle = Article.builder()
+                .id(id)
+                .description("Pain")
+                .price(1.0F)
+                .quantity(5)
+                .build();
+        ArticleDTO expectedDTO = ArticleDTO.builder()
+                .id(id)
+                .description("Pain")
+                .price(1.0F)
+                .quantity(5)
+                .build();
+        Mockito.when(articleRepository.findById(id)).thenReturn(Optional.of(existingArticle));
+        Mockito.when(articleRepository.save(existingArticle)).thenReturn(updatedArticle);
+        Mockito.when(articleMapper.fromArticleToArticleDTO(updatedArticle)).thenReturn(expectedDTO);
+        ArticleDTO result = underTest.updateArticleById(id, updateDTO);
+        assertEquals("Pain", result.getDescription());
+        assertEquals(1.0F, result.getPrice());
+        assertEquals(5, result.getQuantity());
+        assertEquals("Pain", result.getDescription());
     }
     @Test
     void shouldDeleteArticle() throws ArticleNotFoundException {
