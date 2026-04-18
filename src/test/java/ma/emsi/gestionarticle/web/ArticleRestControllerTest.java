@@ -117,9 +117,3 @@ class ArticleRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
-//@Test
-//void shouldDeleteCustomer() throws Exception {
-//    Long customerId=1L;
-//    mockMvc.perform(MockMvcRequestBuilders.delete("/api/customers/{id}",customerId))
-//            .andExpect(MockMvcResultMatchers.status().isNoContent());
-//}

@@ -157,7 +157,7 @@ class ArticleServiceTest {
         AssertionsForClassTypes.assertThat(expected).usingRecursiveComparison().isEqualTo(result);
     }
     @Test
-    void shouldNotFindArticleById() throws ArticleNotFoundException {
+    void shouldNotFindArticleById(){
         Long articleId = 9L;
         Mockito.when(articleRepository.findById(articleId)).thenReturn(Optional.empty());
         AssertionsForClassTypes.assertThatThrownBy(() -> underTest.getArticleById(articleId))
@@ -188,7 +188,6 @@ class ArticleServiceTest {
                 .price(1.2F)
                 .quantity(10).build();
         Mockito.when(articleRepository.findById(articleId)).thenReturn(Optional.of(article));
-//        Mockito.when(articleMapper.fromArticleDTOToArticle(articleDTO)).thenReturn(article);
         Mockito.when(articleRepository.save(article)).thenReturn(updatedArticle);
         Mockito.when(articleMapper.fromArticleToArticleDTO(updatedArticle)).thenReturn(expected);
         ArticleDTO result = underTest.updateArticleById(articleId, articleDTO);
@@ -243,7 +242,7 @@ class ArticleServiceTest {
         Mockito.verify(articleRepository).delete(article);
     }
     @Test
-    void shouldNotDeleteArticle() throws ArticleNotFoundException {
+    void shouldNotDeleteArticle(){
         Long articleId = 9L;
         Mockito.when(articleRepository.findById(articleId)).thenReturn(Optional.empty());
         AssertionsForClassTypes.assertThatThrownBy(() -> underTest.deleteArticleById(articleId))

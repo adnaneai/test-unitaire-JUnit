@@ -6,19 +6,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import java.util.Random;
+
 @SpringBootApplication
-//@Configuration
-//@Profile("!test")
+
 public class GestionArticleApplication {
-    private ArticleRepository articleRepository;
-
-//    public GestionArticleApplication(ArticleRepository articleRepository) {
-//        this.articleRepository = articleRepository;
-//    }
-
+    ArticleRepository articleRepository;
+    private final Random random = new Random();
     public static void main(String[] args) {
         SpringApplication.run(GestionArticleApplication.class, args);
     }
@@ -31,17 +27,16 @@ public class GestionArticleApplication {
                 Article article1 = Article.builder()
                         .description("Pain")
                         .price((float) (1+Math.random()*10))
-                        .quantity((int) (1+Math.random()*1000)).build();
-
+                        .quantity(random.nextInt(1000)).build();
                 Article article2 = Article.builder()
                         .description("Lait")
                         .price((float) (1+Math.random()*10))
-                        .quantity((int) (1+Math.random()*1000)).build();
+                        .quantity(random.nextInt(1000)).build();
 
                 Article article3 = Article.builder()
                         .description("Frommage")
                         .price((float) (1+Math.random()*10))
-                        .quantity((int) (1+Math.random()*1000)).build();
+                        .quantity(random.nextInt(1000)).build();
 
                 articleRepository.save(article1);
                 articleRepository.save(article2);

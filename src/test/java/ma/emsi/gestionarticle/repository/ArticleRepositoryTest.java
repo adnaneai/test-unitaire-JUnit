@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
+import java.util.Random;
 
 @ActiveProfiles("test")
 @DataJpaTest
@@ -18,20 +19,21 @@ import java.util.Optional;
 class ArticleRepositoryTest {
     @Autowired
     ArticleRepository articleRepository;
+    Random random = new Random();
     @BeforeEach
     void init() {
         articleRepository.save(Article.builder()
                 .description("Pain")
                 .price((float) (1+Math.random()*10))
-                .quantity((int) (1+Math.random()*1000)).build());
+                .quantity(random.nextInt(1000)).build());
         articleRepository.save(Article.builder()
                 .description("Lait")
                 .price((float) (1+Math.random()*10))
-                .quantity((int) (1+Math.random()*1000)).build());
+                .quantity(random.nextInt(1000)).build());
         articleRepository.save(Article.builder()
                 .description("Frommage")
                 .price((float) (1+Math.random()*10))
-                .quantity((int) (1+Math.random()*1000)).build());
+                .quantity(random.nextInt(1000)).build());
     }
     @Test
     void shouldFindArticleById() {

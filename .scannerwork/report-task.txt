@@ -1,0 +1,6 @@
+projectKey=gestion-article
+serverUrl=http://localhost:9000
+serverVersion=26.4.0.121862
+dashboardUrl=http://localhost:9000/dashboard?id=gestion-article
+ceTaskId=9c903ac2-b0d4-4e83-afc1-f9614df903ba
+ceTaskUrl=http://localhost:9000/api/ce/task?id=9c903ac2-b0d4-4e83-afc1-f9614df903ba

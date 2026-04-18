@@ -22,6 +22,7 @@ import java.util.Optional;
 public class ArticleServiceImpl implements ArticleService {
     private ArticleMapper articleMapper;
     private ArticleRepository articleRepository;
+    private static final String ARTICLE_NOT_FOUND = "Article not found";
     @Override
     public ArticleDTO save(ArticleDTO articleDTO) throws ArticleNotFoundException {
         if (articleDTO.getId() != null) {
@@ -48,7 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDTO getArticleById(Long id) throws ArticleNotFoundException {
         log.debug("Getting article by id {}", id);
         Article article=articleRepository.findById(id)
-                .orElseThrow(() -> new ArticleNotFoundException("Article not found"));
+                .orElseThrow(() -> new ArticleNotFoundException(ARTICLE_NOT_FOUND));
         return articleMapper.fromArticleToArticleDTO(article);
     }
 
@@ -56,7 +57,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDTO updateArticleById(Long id, ArticleDTO articleDTO) throws ArticleNotFoundException {
         log.debug("Updating article by id {}", id);
         Article article=articleRepository.findById(id)
-                .orElseThrow(() -> new ArticleNotFoundException("Article not found"));
+                .orElseThrow(() -> new ArticleNotFoundException(ARTICLE_NOT_FOUND));
         if (articleDTO.getDescription() != null) {
             article.setDescription(articleDTO.getDescription());
         }
@@ -74,7 +75,7 @@ public class ArticleServiceImpl implements ArticleService {
     public void deleteArticleById(Long id) throws ArticleNotFoundException {
         log.debug("Deleting article by id {}", id);
         Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new ArticleNotFoundException("Article not found"));
+                .orElseThrow(() -> new ArticleNotFoundException(ARTICLE_NOT_FOUND));
         articleRepository.delete(article);
     }
 }
